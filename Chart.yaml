@@ -1,0 +1,15 @@
+Description: Empty caffe2 ml chart
+Engine: gotpl
+Home: http://kuberlab.com
+Icon: https://storage.googleapis.com/kuberlab/static/favicon.ico
+Keywords:
+- kubernetes
+- caffe
+- caffe2
+- hello
+Maintainers:
+- Email: agunin@kuberlab.com
+  Name: Gunin Alexander
+Name: caffe2-mlapp
+Version: 1.0.0
+Type: mlapp

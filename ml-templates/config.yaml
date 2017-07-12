@@ -1,0 +1,45 @@
+Args: --data_dir=/workspace/data --log_dir=$RUNDIR
+Cmd: hello.py
+EnvVars: []
+ExecutionDir: /src/caffe2-mlapp
+Images:
+  BaseImage: caffe2ai/caffe2:c2.cpu.ubuntu14.04
+  GpuImage: caffe2ai/caffe2:c2.cuda8.cudnn6.ubuntu16.04
+  PSImage: caffe2ai/caffe2:c2.cpu.ubuntu14.04
+Jupyter:
+  UseGPU: true
+MonitoringNamespace: kuberlab
+Requests:
+  CPU: 100m
+  CPULimit: 8000m
+  GPU: 1
+  Memory: 2Gi
+  MemoryLimit: 64Gi
+  PsPods: 0
+  WorkerPods: 0
+Volumes:
+- isLibDir: false
+  isTrainLogDir: true
+  mountPath: /training
+  name: training
+  clusterStorage: {{ .storage }}
+  subPath: training
+- gitRepo:
+    repository: https://github.com/kuberlab-catalog/caffe2-mlapp
+  isLibDir: false
+  isTrainLogDir: false
+  mountPath: /src
+  name: src
+  subPath: ""
+- isLibDir: true
+  isTrainLogDir: false
+  mountPath: /workspace/lib
+  name: lib
+  clusterStorage: {{ .storage }}
+  subPath: lib
+- isLibDir: false
+  isTrainLogDir: false
+  mountPath: /workspace/data
+  name: data
+  clusterStorage: {{ .storage }}
+  subPath: /mnist-data
