@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 import sys
 
 # We'll also import a few standard python libraries
-from matplotlib import pyplot
 import numpy as np
 
 # These are the droids you are looking for.
