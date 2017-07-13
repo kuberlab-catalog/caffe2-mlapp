@@ -3,9 +3,9 @@ Cmd: hello.py
 EnvVars: []
 ExecutionDir: /src/caffe2-mlapp
 Images:
-  BaseImage: caffe2ai/caffe2:c2.cpu.ubuntu14.04
-  GpuImage: caffe2ai/caffe2:c2.cuda8.cudnn6.ubuntu16.04
-  PSImage: caffe2ai/caffe2:c2.cpu.ubuntu14.04
+  BaseImage: kuberlab/mlboard-jupyter-caffer2-gpu:latest
+  GpuImage:  kuberlab/mlboard-jupyter-caffer2-gpu:latest
+  PSImage:  kuberlab/mlboard-jupyter-caffer2-gpu:latest
 Jupyter:
   UseGPU: false
   Image: kuberlab/mlboard-jupyter-caffer2-gpu:latest
