@@ -7,7 +7,8 @@ Images:
   GpuImage: caffe2ai/caffe2:c2.cuda8.cudnn6.ubuntu16.04
   PSImage: caffe2ai/caffe2:c2.cpu.ubuntu14.04
 Jupyter:
-  UseGPU: true
+  UseGPU: false
+  Image: kuberlab/mlboard-jupyter-caffer2-gpu:latest
 MonitoringNamespace: kuberlab
 Requests:
   CPU: 100m
