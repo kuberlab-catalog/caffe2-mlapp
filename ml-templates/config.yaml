@@ -3,7 +3,7 @@ Cmd: hello.py
 EnvVars: []
 ExecutionDir: /src/caffe2-mlapp
 Images:
-  BaseImage: kuberlab/mlboard-jupyter-caffer2-gpu:latest
+  BaseImage: kuberlab/mlboard-jupyter-caffer2:latest
   GpuImage:  kuberlab/mlboard-jupyter-caffer2-gpu:latest
   PSImage:  kuberlab/mlboard-jupyter-caffer2-gpu:latest
 Jupyter:
