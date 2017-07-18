@@ -9,13 +9,17 @@ Images:
 Jupyter:
   UseGPU: false
   Image: kuberlab/mlboard-jupyter-caffer2-gpu:latest
+  CPU: 100m
+  CPULimit: 8000m
+  Memory: 128Mi
+  MemoryLimit: 4Gi
 MonitoringNamespace: kuberlab
 Requests:
   CPU: 100m
   CPULimit: 8000m
-  GPU: 1
-  Memory: 2Gi
-  MemoryLimit: 64Gi
+  GPU: 0
+  Memory: 128Mi
+  MemoryLimit: 8Gi
   PsPods: 0
   WorkerPods: 0
 Volumes:
@@ -43,4 +47,4 @@ Volumes:
   mountPath: /workspace/data
   name: data
   clusterStorage: {{ .storage }}
-  subPath: /mnist-data
+  subPath: data
