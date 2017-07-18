@@ -1,12 +1,11 @@
 Description: Empty caffe2 ml chart
 Engine: gotpl
 Home: http://kuberlab.com
-Icon: https://storage.googleapis.com/kuberlab/static/favicon.ico
+Icon: https://caffe2.ai/static/logo.svg
 Keywords:
 - kubernetes
-- caffe
 - caffe2
-- hello
+- kuberlab
 Maintainers:
 - Email: agunin@kuberlab.com
   Name: Gunin Alexander
