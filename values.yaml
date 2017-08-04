@@ -1,1 +1,10 @@
 storage: default
+src: https://github.com:kuberlab-catalog/caffe2-mlapp
+src_path: /caffe2-mlapp/src
+data_path: data
+tensorflow_version: 1.2.0
+python_version: "2"
+serving_port: 9000
+tf_serving: false
+packages:
+ - "git+https://github.com/kuberlab/python-mlboardclient.git"

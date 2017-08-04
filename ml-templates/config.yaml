@@ -1,50 +1,216 @@
-Args: --data_dir=/workspace/data --log_dir=$RUNDIR
-Cmd: hello.py
-EnvVars: []
-ExecutionDir: /src/caffe2-mlapp
-Images:
-  BaseImage: kuberlab/mlboard-jupyter-caffer2:latest
-  GpuImage:  kuberlab/mlboard-jupyter-caffer2-gpu:latest
-  PSImage:  kuberlab/mlboard-jupyter-caffer2-gpu:latest
-Jupyter:
-  UseGPU: false
-  Image: kuberlab/mlboard-jupyter-caffer2-gpu:latest
-  CPU: 100m
-  CPULimit: 8000m
-  Memory: 128Mi
-  MemoryLimit: 4Gi
-MonitoringNamespace: kuberlab
-Requests:
-  CPU: 100m
-  CPULimit: 8000m
-  GPU: 0
-  Memory: 128Mi
-  MemoryLimit: 8Gi
-  PsPods: 0
-  WorkerPods: 0
-Volumes:
-- isLibDir: false
-  isTrainLogDir: true
-  mountPath: /training
-  name: training
-  clusterStorage: {{ .storage }}
-  subPath: training
-- gitRepo:
-    repository: https://github.com/kuberlab-catalog/caffe2-mlapp
-  isLibDir: false
-  isTrainLogDir: false
-  mountPath: /src
-  name: src
-  subPath: ""
-- isLibDir: true
-  isTrainLogDir: false
-  mountPath: /workspace/lib
-  name: lib
-  clusterStorage: {{ .storage }}
-  subPath: lib
-- isLibDir: false
-  isTrainLogDir: false
-  mountPath: /workspace/data
-  name: data
-  clusterStorage: {{ .storage }}
-  subPath: data
+kind: MLApp
+metadata:
+  name: caffe2
+spec:
+  package_manager: "pip2"
+  packages:
+    - names:
+      {{- range $i, $value := .packages }}
+      - "{{ $value }}"
+      {{- end }}
+      manager: "pip2"
+  tasks:
+  - name: prepare-data
+    resources:
+    - name: upload
+      replicas: 1
+      restartPolicy: Never
+      maxRestartCount: 1
+      allowFail: true
+      images:
+        cpu: busybox
+      command: "echo \"Uploading Data\";echo \"Done!!!\""
+      workdir: "$DATA_DIR"
+      volumes:
+      - name: data
+  - name: standalone
+    resources:
+    - name: worker
+      replicas: 1
+      restartPolicy: Never
+      maxRestartCount: 0
+      allowFail: true
+      images:
+        gpu: "mlboard-jupyter-caffer2-gpu:latest"
+        cpu: "mlboard-jupyter-caffer2:latest"
+      command: python
+      args: hello.py
+      workdir: "$SRC_DIR"
+      resources:
+        accelerators:
+          gpu: 0
+          dedicated_gpu: true
+        requests:
+          cpu: 100m
+          memory: 1Gi
+        limits:
+          cpu: 1000m
+          memory: 4Gi
+      volumes:
+      - name: lib
+      - name: training
+      - name: src
+      - name: data
+      - name: code
+  - name: export
+    resources:
+    - name: worker
+      replicas: 1
+      restartPolicy: Never
+      maxRestartCount: 0
+      allowFail: true
+      images:
+        gpu: "mlboard-jupyter-caffer2-gpu:latest"
+        cpu: "mlboard-jupyter-caffer2:latest"
+      command: "echo \"BUILD: $BUILD_ID\"; python"
+      args: hello.py
+      workdir: "$SRC_DIR"
+      resources:
+        accelerators:
+          gpu: 0
+          dedicated_gpu: true
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 1000m
+          memory: 4Gi
+      volumes:
+      - name: lib
+      - name: training
+      - name: src
+      - name: data
+      - name: code
+  - name: workflow
+    resources:
+    - name: tasks
+      replicas: 1
+      restartPolicy: Never
+      maxRestartCount: 0
+      allowFail: true
+      images:
+        gpu: "mlboard-jupyter-caffer2-gpu:latest"
+        cpu: "mlboard-jupyter-caffer2:latest"
+      command: python
+      args: run_tasks.py
+      workdir: "$SRC_DIR"
+      resources:
+        accelerators:
+          gpu: 0
+          dedicated_gpu: true
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
+      volumes:
+      - name: lib
+      - name: training
+      - name: src
+      - name: data
+      - name: code
+  uix:
+  - name: jupyter
+    displayName: Jupyter
+    images:
+      gpu: "mlboard-jupyter-caffer2-gpu:latest"
+      cpu: "mlboard-jupyter-caffer2:latest"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 4Gi
+    ports:
+    - port: 8888
+      targetPort: 8888
+      protocol: TCP
+      name: http
+    volumes:
+    - name: lib
+      mountPath: /notebooks/lib
+    - name: src
+      mountPath: /notebooks/src
+    - name: training
+      mountPath: /notebooks/training
+    - name: data
+      mountPath: /notebooks/data
+    - name: code
+      mountPath: /notebooks
+  - name: tensorboard
+    displayName: Tensorboard
+    command: "tensorboard"
+    args: "--logdir=$TRAINING_DIR"
+    images:
+      cpu: "lsheiba/tensorflow-ls-devel"
+    ports:
+    - port: 6006
+      targetPort: 6006
+      protocol: TCP
+      name: http
+    volumes:
+    - name: training
+  serving:
+  - name: serving
+    displayName: Serving
+    images:
+      gpu: "mlboard-jupyter-caffer2-gpu:latest"
+      cpu: "mlboard-jupyter-caffer2:latest"
+    workdir: "$SRC_DIR"
+    command: python
+    args: hello.py
+    resources:
+      accelerators:
+        gpu: 0
+        dedicated_gpu: true
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 1000m
+        memory: 4Gi
+    ports:
+    - port: {{ .serving_port }}
+      targetPort: {{ .serving_port }}
+      protocol: TCP
+      name: http
+    volumes:
+    - name: training
+    - name: data
+    - name: src
+    - name: lib
+    - name: code
+  volumes:
+  - isLibDir: false
+    isTrainLogDir: true
+    mountPath: /training
+    name: training
+    clusterStorage: {{ .storage }}
+    subPath: training
+  - gitRepo:
+      repository: {{ .src }}
+    isLibDir: false
+    isTrainLogDir: false
+    mountPath: /src
+    name: src
+    subPath: "{{ .src_path }}"
+  - isLibDir: true
+    isTrainLogDir: false
+    mountPath: /workspace/lib
+    name: lib
+    clusterStorage: {{ .storage }}
+    subPath: lib
+  - isLibDir: false
+    isTrainLogDir: false
+    mountPath: /data
+    name: data
+    clusterStorage: {{ .storage }}
+    subPath: {{ .data_path }}
+  - isLibDir: false
+    isTrainLogDir: false
+    mountPath: /code
+    name: code
+    subPath: code
+    clusterStorage: {{ .storage }}
