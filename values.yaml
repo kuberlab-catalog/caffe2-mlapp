@@ -1,5 +1,5 @@
 storage: default
-src: https://github.com:kuberlab-catalog/caffe2-mlapp
+src: https://github.com/kuberlab-catalog/caffe2-mlapp
 src_path: /caffe2-mlapp/src
 data_path: data
 tensorflow_version: 1.2.0
