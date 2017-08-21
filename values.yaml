@@ -1,6 +1,6 @@
 storage: default
 tmp_storage:
-  cluster_storage
+  cluster_storage: true
 src: https://github.com/kuberlab-catalog/caffe2-mlapp
 src_path: /caffe2-mlapp/src
 data_path: data
