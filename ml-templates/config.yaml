@@ -202,10 +202,10 @@ spec:
     isTrainLogDir: true
     mountPath: /training
     name: training
-    clusterStorage: {{ .storage }}
+    clusterStorage: {{ .storage.value }}
     subPath: training
   - gitRepo:
-      repository: {{ .src }}
+      repository: {{ .src.value }}
     isLibDir: false
     isTrainLogDir: false
     mountPath: /src
@@ -215,17 +215,17 @@ spec:
     isTrainLogDir: false
     mountPath: /workspace/lib
     name: lib
-    clusterStorage: {{ .storage }}
+    clusterStorage: {{ .storage.value }}
     subPath: lib
   - isLibDir: false
     isTrainLogDir: false
     mountPath: /data
     name: data
-    clusterStorage: {{ .storage }}
+    clusterStorage: {{ .storage.value }}
     subPath: {{ .data_path }}
   - isLibDir: false
     isTrainLogDir: false
     mountPath: /code
     name: code
     subPath: code
-    clusterStorage: {{ .storage }}
+    clusterStorage: {{ .storage.value }}
