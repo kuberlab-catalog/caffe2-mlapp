@@ -1,7 +1,7 @@
 storage: 
  value: default
  wizard:
-   cluster_storage: true
+   kind: cluster_storage
 src: https://github.com/kuberlab-catalog/caffe2-mlapp
 src_path: /caffe2-mlapp/src
 data_path: data
@@ -9,6 +9,7 @@ tensorflow_version: 1.2.0
 python_version:
   value: "2"
   wizard:
+    kind: select
     options:
     - "2"
     - "3"
