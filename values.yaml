@@ -1,9 +1,15 @@
 storage: default
+tmp_storage:
+  cluster_storage
 src: https://github.com/kuberlab-catalog/caffe2-mlapp
 src_path: /caffe2-mlapp/src
 data_path: data
 tensorflow_version: 1.2.0
 python_version: "2"
+tmp_python_version:
+  options:
+  - "2"
+  - "3"
 serving_port: 9000
 tf_serving: false
 packages:
