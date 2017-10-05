@@ -31,14 +31,11 @@ spec:
       maxRestartCount: 0
       allowFail: true
       images:
-        gpu: "caffe2ai/caffe2:c2.cuda8.cudnn5.ubuntu16.04"
-        cpu: "caffe2ai/caffe2:c2.cpu.ubuntu14.04"
-      command: python
+        gpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-gpu-py2"
+        cpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-cpu-py2"
+      command: python2
       args: hello.py
       workdir: "$SRC_DIR"
-      env:
-      - name: PYTHONPATH
-        value: /usr/local
       resources:
         accelerators:
           gpu: 0
@@ -48,71 +45,7 @@ spec:
           memory: 1Gi
         limits:
           cpu: 1000m
-          memory: 4Gi
-      volumes:
-      - name: lib
-      - name: training
-      - name: src
-      - name: data
-      - name: code
-  - name: export
-    resources:
-    - name: worker
-      replicas: 1
-      restartPolicy: Never
-      maxRestartCount: 0
-      allowFail: true
-      images:
-        gpu: "caffe2ai/caffe2:c2.cuda8.cudnn5.ubuntu16.04"
-        cpu: "caffe2ai/caffe2:c2.cpu.ubuntu14.04"
-      command: "echo \"BUILD: $BUILD_ID\"; python"
-      args: hello.py
-      workdir: "$SRC_DIR"
-      env:
-      - name: PYTHONPATH
-        value: /usr/local
-      resources:
-        accelerators:
-          gpu: 0
-          dedicated_gpu: true
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          cpu: 1000m
-          memory: 4Gi
-      volumes:
-      - name: lib
-      - name: training
-      - name: src
-      - name: data
-      - name: code
-  - name: workflow
-    resources:
-    - name: tasks
-      replicas: 1
-      restartPolicy: Never
-      maxRestartCount: 0
-      allowFail: true
-      images:
-        gpu: "caffe2ai/caffe2:c2.cuda8.cudnn5.ubuntu16.04"
-        cpu: "caffe2ai/caffe2:c2.cpu.ubuntu14.04"
-      command: python
-      args: run_tasks.py
-      workdir: "$SRC_DIR"
-      env:
-      - name: PYTHONPATH
-        value: /usr/local
-      resources:
-        accelerators:
-          gpu: 0
-          dedicated_gpu: true
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          cpu: 500m
-          memory: 1Gi
+          memory: 8Gi
       volumes:
       - name: lib
       - name: training
@@ -123,18 +56,18 @@ spec:
   - name: jupyter
     displayName: Jupyter
     images:
-      gpu: "kuberlab/mlboard-jupyter-caffer2-gpu:latest"
-      cpu: "kuberlab/mlboard-jupyter-caffer2:latest"
+      gpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-gpu-py2"
+      cpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-cpu-py2"
     resources:
+      accelerators:
+        gpu: 0
+        dedicated_gpu: true
       requests:
         cpu: 100m
         memory: 256Mi
       limits:
         cpu: 1000m
         memory: 4Gi
-    env:
-    - name: PYTHONPATH
-      value: /usr/local
     ports:
     - port: 8888
       targetPort: 8888
@@ -151,31 +84,15 @@ spec:
       mountPath: /notebooks/data
     - name: code
       mountPath: /notebooks
-  - name: tensorboard
-    displayName: Tensorboard
-    command: "tensorboard"
-    args: "--logdir=$TRAINING_DIR"
-    images:
-      cpu: "lsheiba/tensorflow-ls-devel"
-    ports:
-    - port: 6006
-      targetPort: 6006
-      protocol: TCP
-      name: http
-    volumes:
-    - name: training
   serving:
   - name: serving
     displayName: Serving
     images:
-        gpu: "caffe2ai/caffe2:c2.cuda8.cudnn5.ubuntu16.04"
-        cpu: "caffe2ai/caffe2:c2.cpu.ubuntu14.04"
+      gpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-gpu-py2"
+      cpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-cpu-py2"
     workdir: "$SRC_DIR"
     command: python
     args: hello.py
-    env:
-    - name: PYTHONPATH
-      value: /usr/local
     resources:
       accelerators:
         gpu: 0
@@ -205,12 +122,14 @@ spec:
     clusterStorage: {{ .storage.value }}
     subPath: training
   - gitRepo:
-      repository: {{ .src.value }}
+      repository: {{ .src }}
     isLibDir: false
     isTrainLogDir: false
     mountPath: /src
     name: src
+    {{- if .src_path }}
     subPath: "{{ .src_path }}"
+    {{- end }}
   - isLibDir: true
     isTrainLogDir: false
     mountPath: /workspace/lib

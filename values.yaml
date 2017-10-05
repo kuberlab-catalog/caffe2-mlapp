@@ -1,15 +1,25 @@
-storage: 
- value: default
- wizard:
-   name: "Storage Configuration"
-   kind: cluster_storage
-src: 
- value: https://github.com/kuberlab-catalog/caffe2-mlapp
- wizard:
-  name: "Code source"
-  kind: git
-src_path: /caffe2-mlapp/src
-data_path: data
-serving_port: 9000
-packages:
- - "git+https://github.com/kuberlab/python-mlboardclient.git"
+storage:
+  value: default
+  wizard:
+    name: "Storage Configuration"
+    kind: cluster_storage
+
+ src: https://github.com/kuberlab-catalog/caffe2-mlapp
+ src_path: caffe2-mlapp/src
+
+ data_path: data
+
+caffe2_version:
+   value: "0.8.0"
+   wizard:
+     name: "Caffe2 version"
+     kind: select
+     options:
+     - "0.8.0"
+     - "0.8.1"
+
+ serving_port: 9000
+
+ packages:
+  - "git+https://github.com/kuberlab/python-mlboardclient.git"
+
