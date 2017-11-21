@@ -6,4 +6,4 @@ Conatains:
 
 - Jupyter for interactive development
 
-- Example of tasks for start training
+- Examples of training tasks
