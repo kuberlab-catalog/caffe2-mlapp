@@ -4,10 +4,7 @@ storage:
     name: "Storage Configuration"
     kind: cluster_storage
 
- src: https://github.com/kuberlab-catalog/caffe2-mlapp
- src_path: caffe2-mlapp/src
-
- data_path: data
+data_path: data
 
 caffe2_version:
    value: "0.8.0"

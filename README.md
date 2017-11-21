@@ -1,1 +1,1 @@
-# caffe2-mlapp
+# Caffe2 application
