@@ -7,16 +7,16 @@ storage:
 data_path: data
 
 caffe2_version:
-   value: "0.8.0"
-   wizard:
-     name: "Caffe2 version"
-     kind: select
-     options:
-     - "0.8.0"
-     - "0.8.1"
+  value: "0.8.0"
+  wizard:
+    name: "Caffe2 version"
+    kind: select
+    options:
+    - "0.8.0"
+    - "0.8.1"
 
- serving_port: 9000
+serving_port: 9000
 
- packages:
+packages:
   - "git+https://github.com/kuberlab/python-mlboardclient.git"
 
