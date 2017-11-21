@@ -1,7 +1,9 @@
-# Caffe2 ML project
+# Caffe2 
 
-This is an exmple of the Caffe2 based project.
+This the base Caffe2 project.
 
 Conatains:
+
 - Jupyter for interactive development
+
 - Example of tasks for start training
