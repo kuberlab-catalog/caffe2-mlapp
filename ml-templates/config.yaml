@@ -72,6 +72,9 @@ spec:
       protocol: TCP
       name: http
     default_volume_mapping: true
+    env:
+    - name: PYTHONPATH
+      value: /usr/local
   serving:
   - name: serving
     displayName: Serving
