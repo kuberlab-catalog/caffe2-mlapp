@@ -33,7 +33,7 @@ spec:
       images:
         gpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-gpu-py2"
         cpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-cpu-py2"
-      command: python2 hello.py
+      command: "python2 hello.py"
       workdir: "$SRC_DIR"
       resources:
         accelerators:
@@ -66,7 +66,6 @@ spec:
       protocol: TCP
       name: http
     default_volume_mapping: true
-    default_mount_path: "/notebooks"
   serving:
   - name: serving
     displayName: Serving
@@ -74,7 +73,7 @@ spec:
       gpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-gpu-py2"
       cpu: "kuberlab/mlboard-jupyter-caffe2:{{.caffe2_version.value}}-cpu-py2"
     workdir: "$SRC_DIR"
-    command: python hello.py
+    command: "python hello.py"
     resources:
       accelerators:
         gpu: 0
@@ -92,28 +91,28 @@ spec:
     default_volume_mapping: true
   volumes:
   - isLibDir: false
-    mountPath: /workspace/training
+    mountPath: /notebooks/training
     name: training
     clusterStorage: {{ .storage.value }}
     subPath: training
   - gitRepo:
       repository: https://github.com/kuberlab-catalog/caffe2-mlapp
     isLibDir: false
-    mountPath: /workspace/src
+    mountPath: /notebooks/src
     name: src
     subPath: caffe2-mlapp/src
   - isLibDir: true
-    mountPath: /workspace/lib
+    mountPath: /notebooks/lib
     name: lib
     clusterStorage: {{ .storage.value }}
     subPath: lib
   - isLibDir: false
-    mountPath: /workspace/data
+    mountPath: /notebooks/data
     name: data
     clusterStorage: {{ .storage.value }}
     subPath: {{ .data_path }}
   - isLibDir: false
-    mountPath: /workspace/code
+    mountPath: /notebooks
     name: code
     subPath: code
     clusterStorage: {{ .storage.value }}
